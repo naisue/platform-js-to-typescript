@@ -1,19 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun } from "@fortawesome/free-solid-svg-icons";
-import { faMoon } from "@fortawesome/free-regular-svg-icons";
+import { faMoon as darkMoon } from "@fortawesome/free-solid-svg-icons";
+// import { faMoon as lightMoon } from "@fortawesome/free-regular-svg-icons";
 import styled from "styled-components";
 import { DarkLogo, LightLogo } from "./Logo";
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
 import { useRecoilState } from "recoil";
 import { isDarkAtom } from "../atoms";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 
 const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: fixed;
-    width: 100%;
+    left: 0;
+    right: 0;
     top: 0;
     padding: 1rem 1rem;
     background-color: #07274E;
@@ -93,20 +94,40 @@ const Item = styled.li`
     align-items: center;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
 `;
 
-const DarkModeSwitch = styled.button`
+const DarkModeSwitch = styled.button<DarkModeSwitchProps>`
     height: 30px;
     font-size: 20px;
-    color: whitesmoke;
+    color: ${(props) => props.color};
     background: none;
     border: none;
-    transition: color 0.2s ease-in-out;`;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+    `;
 
-const Login = styled.button``;
+const Login = styled.button`
+    margin: 0 1rem;
+    border: none;
+    background: none;
+    color: whitesmoke;
+    font-size: 16px;
+    transition: text-decoration 0.5s ease-in-out;
+
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+`;
+
+interface DarkModeSwitchProps {
+    color: string;
+}
 
 function Header() {
     const [isDark, setMode] = useRecoilState(isDarkAtom);
+    const homeMatch = useRouteMatch("/");
 
     return (
         <Nav>
@@ -124,17 +145,21 @@ function Header() {
                         Apps
                     </Apps>
                     <Item>
-                        Dashboard
+                        <Link to="/dashboard">
+                            Dashboard
+                        </Link>
                     </Item>
                 </Items>
             </Col>
             <Col>
                 <Items>
-                    <DarkModeSwitch onClick={() => setMode(prev => !prev)}>
-                        <FontAwesomeIcon icon={isDark? faSun : faMoon} />
+                    <DarkModeSwitch onClick={() => setMode(prev => !prev)} color={isDark? "whitesmoke" : "#07274E"}>
+                        <FontAwesomeIcon icon={darkMoon} />
                     </DarkModeSwitch>
                     <Login>
+                        <Link to="/login">
                         Login
+                        </Link>
                     </Login>
                 </Items>
             </Col>
